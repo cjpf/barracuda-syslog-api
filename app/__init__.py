@@ -29,8 +29,9 @@ def create_app(config_class):
     migrate.init_app(app, db)
     mail.init_app(app)
 
-    from app.parse import bp as parse_bp
-    app.register_blueprint(parse_bp)
+    if app.config['JOB_CONFIG']:
+        from app.parse import bp as parse_bp
+        app.register_blueprint(parse_bp)
 
     if app.config['MAIL_API']:
         from app.api import bp as api_bp
