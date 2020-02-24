@@ -21,7 +21,8 @@ def parse_log():
         with app.app_context():
             for line in Pygtail(app.config['ESS_LOG'],
                                 paranoid=True,
-                                full_lines=True):
+                                full_lines=True,
+                                offset_file=app.config['ESS_LOG_OFFSET']):
                 data = re.findall(r'\{.*\}', line)
                 data = json.loads(data[0])
 
