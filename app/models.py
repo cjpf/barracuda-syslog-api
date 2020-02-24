@@ -164,7 +164,7 @@ class Message(PaginatedAPIMixin, db.Model):
     account_id = db.Column(db.String(12), db.ForeignKey('account.account_id'))
     account = db.relationship(
         'Account', backref=db.backref('messages', lazy='dynamic'))
-    domain_id = db.Column(db.String(12), db.ForeignKey('domain.domain_id'))
+    domain_id = db.Column(db.Integer, db.ForeignKey('domain.domain_id'))
     domain = db.relationship(
         'Domain', backref=db.backref('messages', lazy='dynamic'))
     src_ip = db.Column(db.String(16), index=True)
