@@ -17,14 +17,17 @@ def parse_log():
     app_context.push()
 
     _detect_rotated_log(app)
-    try:
-        with app.app_context():
+    with app.app_context():
+        try:
             for line in Pygtail(app.config['ESS_LOG'],
                                 paranoid=True,
                                 full_lines=True,
                                 offset_file=app.config['ESS_LOG_OFFSET']):
-                data = re.findall(r'\{.*\}', line)
-                data = json.loads(data[0])
+                try:
+                    data = re.findall(r'\{.*\}', line)
+                    data = json.loads(data[0])
+                except Exception as r:
+                    app.logger.error(r)
 
                 if _is_connection_test(data['account_id'], data['domain_id']):
                     app.logger.info('Conncetion Test Detected. Skipping...')
@@ -62,8 +65,8 @@ def parse_log():
                     app.logger.error(e)
                 else:
                     db.session.commit()
-    except Exception as e:
-        app.logger.error(e)
+        except Exception as f:
+            app.logger.error(f)
 
     app.logger.info('Closing app context for parse_log')
     app_context.pop()
