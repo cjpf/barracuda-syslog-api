@@ -69,9 +69,6 @@ def create_app(config_class):
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
         app.logger.setLevel(logging.INFO)
-        app.logger.info('app created')
-    else:
-        app.logger.info('parse_log app created')
 
     if app.config['SCHEDULER_API']:
         app.logger.info("Scheduler API Enabled.  Starting Scheduler...")
@@ -81,5 +78,11 @@ def create_app(config_class):
             app.logger.info(scheduler.get_jobs()[0])
         except Exception as e:
             app.logger.info(e)
+
+    if not app.config['TESTING'] and not app.config['DEBUG']:
+        app.logger.info('app created')
+
+    if app.config['JOB_CONFIG']:
+        app.logger.info('parse_log app created')
 
     return app

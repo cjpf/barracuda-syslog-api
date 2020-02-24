@@ -66,7 +66,7 @@ class DevelopmentConfig(BaseConfig):
     Development environment specific config
     '''
     DEBUG = True
-    TESTING = True
+    TESTING = False
 
 
 class ProductionConfig(BaseConfig):
