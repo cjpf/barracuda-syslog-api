@@ -97,7 +97,9 @@ def _is_connection_test(account_id, domain_id):
 
 
 def _add(item):
-    'Add an item to the db'
+    '''
+    Add an item to the db
+    '''
     try:
         db.session.add(item)
         return True
@@ -106,7 +108,9 @@ def _add(item):
 
 
 def _store_account(logger, data):
-    'Creates new Account entry if not already created.'
+    '''
+    Creates new Account entry if not already created.
+    '''
     if _account_exists(logger, data['account_id']):
         logger.info("Account ID FOUND. Skipping Account...")
         return False
@@ -120,7 +124,9 @@ def _store_account(logger, data):
 
 
 def _store_attachment(logger, data, message_id):
-    'Creates new Attachment entry if Message has already been created'
+    '''
+    Creates new Attachment entry if Message has already been created
+    '''
     logger.info('Creating Attachment.')
     a = Attachment(
         message_id=message_id,
@@ -133,7 +139,9 @@ def _store_attachment(logger, data, message_id):
 
 
 def _store_domain(logger, data):
-    'Creates new Domain entry if not already created.'
+    '''
+    Creates new Domain entry if not already created.
+    '''
     if _domain_exists(logger, data['domain_id']):
         logger.info("Domain ID FOUND. Skipping Domain...")
         return False
@@ -147,7 +155,9 @@ def _store_domain(logger, data):
 
 
 def _store_message(logger, data):
-    'Creates new Message entry if not already created.'
+    '''
+    Creates new Message entry if not already created.
+    '''
     logger.info("Creating Message.")
     m = Message(
         message_id=data['message_id'],
@@ -170,7 +180,9 @@ def _store_message(logger, data):
 
 
 def _store_recipient(logger, data, message_id):
-    'Creates new Recipient entry if Message has already been created'
+    '''
+    Creates new Recipient entry if Message has already been created
+    '''
     logger.info('Creating Recipient.')
     r = Recipient(
         message_id=message_id,
@@ -188,7 +200,9 @@ def _store_recipient(logger, data, message_id):
 
 
 def _account_exists(logger, account_id):
-    'Checks to see if an Account already exists in the database.'
+    '''
+    Checks to see if an Account already exists in the database.
+    '''
     logger.info(
         "Checking for existing Account ID ({})".format(account_id))
     return True if Account.query.filter_by(account_id=account_id).first() \
@@ -196,7 +210,9 @@ def _account_exists(logger, account_id):
 
 
 def _domain_exists(logger, domain_id):
-    'Checks to see if a Domain already exists in the database.'
+    '''
+    Checks to see if a Domain already exists in the database.
+    '''
     logger.info(
         "Checking for existing Domain ID ({})".format(domain_id))
     return True if Domain.query.filter_by(domain_id=domain_id).first() \
@@ -204,7 +220,9 @@ def _domain_exists(logger, domain_id):
 
 
 def _message_exists(logger, message_id):
-    'Checks to see if a Message already exists in the database.'
+    '''
+    Checks to see if a Message already exists in the database.
+    '''
     logger.info(
         'Checking for existing Message ID ({})'.format(message_id))
     return True if Message.query.filter_by(message_id=message_id).first() \
