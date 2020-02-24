@@ -32,8 +32,9 @@ def create_app(config_class):
     from app.parse import bp as parse_bp
     app.register_blueprint(parse_bp)
 
-    from app.api import bp as api_bp
-    app.register_blueprint(api_bp, url_prefix='/api')
+    if app.config['MAIL_API']:
+        from app.api import bp as api_bp
+        app.register_blueprint(api_bp, url_prefix='/api')
 
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
@@ -67,11 +68,11 @@ def create_app(config_class):
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
         app.logger.setLevel(logging.INFO)
-        app.logger.info('barracuda-syslog-tools startup')
+        app.logger.info('app created')
     else:
-        app.logger.info('creating parse_log app')
+        app.logger.info('parse_log app created')
 
-    if app.config['SCHEDULER_API_ENABLED']:
+    if app.config['SCHEDULER_API']:
         app.logger.info("Scheduler API Enabled.  Starting Scheduler...")
         try:
             scheduler.init_app(app)
