@@ -17,7 +17,6 @@ def parse_log():
     app_context.push()
 
     _detect_rotated_log(app)
-
     with app.app_context():
         for line in Pygtail(app.config['ESS_LOG'],
                             paranoid=True,
