@@ -17,49 +17,52 @@ def parse_log():
     app_context.push()
 
     _detect_rotated_log(app)
-    with app.app_context():
-        for line in Pygtail(app.config['ESS_LOG'],
-                            paranoid=True,
-                            full_lines=True):
-            data = re.findall(r'\{.*\}', line)
-            data = json.loads(data[0])
+    try:
+        with app.app_context():
+            for line in Pygtail(app.config['ESS_LOG'],
+                                paranoid=True,
+                                full_lines=True):
+                data = re.findall(r'\{.*\}', line)
+                data = json.loads(data[0])
 
-            if _is_connection_test(data['account_id'], data['domain_id']):
-                app.logger.info('Conncetion Test Detected. Skipping...')
-                continue
+                if _is_connection_test(data['account_id'], data['domain_id']):
+                    app.logger.info('Conncetion Test Detected. Skipping...')
+                    continue
 
-            if _message_exists(app.logger, data['message_id']):
-                app.logger.info('Message ID FOUND. Skipping...')
-                continue
-            app.logger.info('Message ID NOT FOUND. Processing...')
+                if _message_exists(app.logger, data['message_id']):
+                    app.logger.info('Message ID FOUND. Skipping...')
+                    continue
+                app.logger.info('Message ID NOT FOUND. Processing...')
 
-            try:
-                _store_account(app.logger, data)
-                _store_domain(app.logger, data)
-                _store_message(app.logger, data)
+                try:
+                    _store_account(app.logger, data)
+                    _store_domain(app.logger, data)
+                    _store_message(app.logger, data)
 
-                if data['recipients']:
-                    for recipient in data['recipients']:
-                        _store_recipient(
-                            app.logger,
-                            recipient,
-                            data['message_id'])
+                    if data['recipients']:
+                        for recipient in data['recipients']:
+                            _store_recipient(
+                                app.logger,
+                                recipient,
+                                data['message_id'])
 
-                if data['attachments']:
-                    for attachment in data['attachments']:
-                        _store_attachment(
-                            app.logger,
-                            attachment,
-                            data['message_id'])
+                    if data['attachments']:
+                        for attachment in data['attachments']:
+                            _store_attachment(
+                                app.logger,
+                                attachment,
+                                data['message_id'])
 
-            except Exception as e:
-                db.session.rollback()
-                app.logger.error(
-                    "Failed to Process Message ({})".format(
-                        data['message_id']))
-                app.logger.error(e)
-            else:
-                db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    app.logger.error(
+                        "Failed to Process Message ({})".format(
+                            data['message_id']))
+                    app.logger.error(e)
+                else:
+                    db.session.commit()
+    except Exception as e:
+        app.logger.error(e)
 
     app.logger.info('Closing app context for parse_log')
     app_context.pop()

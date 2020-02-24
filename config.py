@@ -77,6 +77,7 @@ class ProductionConfig(BaseConfig):
     TESTING = False
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
+
 class TestConfig(BaseConfig):
     '''
     Unit Testing Config
