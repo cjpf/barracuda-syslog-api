@@ -160,7 +160,7 @@ class Message(PaginatedAPIMixin, db.Model):
     This model represents an email that passed through Barracuda Email
     Security Service
     '''
-    message_id = db.Column(db.String(32), primary_key=True)
+    message_id = db.Column(db.String(45), primary_key=True)
     account_id = db.Column(db.String(12), db.ForeignKey('account.account_id'))
     account = db.relationship(
         'Account', backref=db.backref('messages', lazy='dynamic'))
