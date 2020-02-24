@@ -79,10 +79,7 @@ def create_app(config_class):
         except Exception as e:
             app.logger.info(e)
 
-    if not app.config['TESTING'] and not app.config['DEBUG']:
-        app.logger.info('app created')
+    app.logger.info('app created')
 
-    if app.config['JOB_CONFIG']:
-        app.logger.info('parse_log app created')
 
     return app
