@@ -1,7 +1,7 @@
 FROM python:3.8-alpine
 
-RUN apt-get update && \
-    apt-get upgrade -y
+RUN apk update && \
+    apk upgrade -y
 
 RUN adduser -D api
 
