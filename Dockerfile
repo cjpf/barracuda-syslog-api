@@ -1,8 +1,15 @@
-FROM python:3.8-alpine3.11
+FROM python:3.8-slim-buster
+
+RUN apt-get update
+
 
 RUN adduser -D api
 
+
+
 WORKDIR /home/api
+
+
 
 COPY requirements.txt requirements.txt
 RUN python -m venv venv
