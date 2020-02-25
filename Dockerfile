@@ -1,8 +1,9 @@
 FROM python:3.8-alpine
 
-RUN apk update && \
-    apk upgrade --no-cache && \
-    apk add --no-cache gcc
+RUN apk --update add --virtual build-dependencies libffi-dev openssl-dev python-dev py-pip build-base \
+    && pip install --upgrade pip \
+    && pip install -r requirements.txt \
+    && apk del build-dependencies
 
 RUN adduser -D api
 
