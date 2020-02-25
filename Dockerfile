@@ -5,7 +5,6 @@ RUN adduser -D api
 WORKDIR /home/api
 
 COPY requirements.txt requirements.txt
-RUN apt-get update && apt-get upgrade && apt-get install gcc
 RUN python -m venv venv
 RUN venv/bin/pip install --upgrade pip
 RUN venv/bin/pip install -r requirements.txt
