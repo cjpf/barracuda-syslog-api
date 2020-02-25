@@ -3,10 +3,11 @@ FROM python:3.8-alpine
 
 COPY requirements.txt requirements.txt
 RUN python -m venv venv
-RUN apk --update add python py-pip gunicorn
+RUN apk --update add python py-pip 
 RUN apk --update add --virtual build-dependencies libffi-dev openssl-dev python-dev py-pip build-base \
     && pip install --upgrade pip \
     && pip install -r requirements.txt \
+    && pip install gunicorn pymysql \
     && apk del build-dependencies
 
 RUN adduser -D api
