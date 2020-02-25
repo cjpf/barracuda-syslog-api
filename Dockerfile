@@ -1,5 +1,9 @@
 FROM python:3.8-alpine
 
+
+COPY requirements.txt requirements.txt
+RUN python -m venv venv
+RUN apk --update add python py-pip gunicorn
 RUN apk --update add --virtual build-dependencies libffi-dev openssl-dev python-dev py-pip build-base \
     && pip install --upgrade pip \
     && pip install -r requirements.txt \
@@ -7,18 +11,7 @@ RUN apk --update add --virtual build-dependencies libffi-dev openssl-dev python-
 
 RUN adduser -D api
 
-
-
 WORKDIR /home/api
-
-
-
-COPY requirements.txt requirements.txt
-RUN python -m venv venv
-RUN venv/bin/pip install --upgrade pip
-RUN venv/bin/pip install -r requirements.txt
-RUN venv/bin/pip install gunicorn pymysql
-
 
 COPY app app
 COPY migrations migrations
