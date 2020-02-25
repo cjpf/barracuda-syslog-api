@@ -262,6 +262,34 @@ class Attachment(db.Model):
         return '<Attachment {}, from Message {}>'.format(self.id,
                                                          self.message_id)
 
+    def to_dict(self):
+        '''
+            Converts an Attachment object to a Python dict
+            This will later be converted to JSON format 
+            For retreiving
+        '''
+        data={
+            'id':self.id,
+            'message_id':self.message_id,
+            'name':self.name
+        }
+        return data
+
+    def from_dict(self):
+        '''
+            Converts a Python dict to an Attachment object 
+            For creating Attachments
+        '''
+        for field in [
+            'id',
+            'message_id',
+            'name'
+        ]:
+            if field in data:
+                setattr(self, field, data[field])
+        
+
+
 
 class Account(PaginatedAPIMixin, db.Model):
     '''
