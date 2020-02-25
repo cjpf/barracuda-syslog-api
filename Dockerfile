@@ -3,7 +3,7 @@ FROM python:3.8-slim-buster
 RUN apt-get update && \
     apt-get upgrade -y
 
-RUN adduser -D api
+RUN adduser api
 
 
 
