@@ -1,7 +1,8 @@
 FROM python:3.8-alpine
 
 RUN apk update && \
-    apk upgrade
+    apk upgrade --no-cache && \
+    apk add --no-cache gcc
 
 RUN adduser -D api
 
