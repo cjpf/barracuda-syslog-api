@@ -31,3 +31,31 @@ def get_recipients(message_id):
     return jsonify(data)
 
 # create a recipient by message id
+@bp.route('/recipients', methods=['POST'])
+@token_auth.login_required
+def create_recipient():
+    '''
+        Create Recipient
+    '''
+    data = request.get_json() or {}
+    if 'message_id' not in data:
+        return bad_request('must include message_id')
+    if 'email' not in data:
+        return bad_request('recipient must have an email')
+    if 'delivered' not in data:
+        return bad_request('must include delivery status')
+    if Recipient.query.filter_by(
+            message_id=data['message_id'],
+            email = data['email']).first():
+        return bad_request('message already has this recipient email')
+    recipient = Recipient()
+    recipient.from_dict(data)
+    db.session.add(recipient)
+    db.session.commit()
+    response = jsonify(recipient.to_dict())
+    response.status_code = 201
+
+    # response.headers['Location'] = url_for(
+    #     'api.get_recipient', recipient=recipient.id
+    # )
+    return response    
