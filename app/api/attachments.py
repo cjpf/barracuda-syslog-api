@@ -20,7 +20,17 @@ def get_attachments():
     '''
         Retrieve a collection of all attachments
     '''
+    print("message id : {}".format(message_id))
     m = Message.query.get_or_404(message_id).first()
-
-    # return jsonify(m.attachments.all())
+    return jsonify(m.attachments.all())
+    # look at tables and models and check out how to do this
     # look into this^^
+
+@bp.route('/attachments/<string:message_id>', methods=[POST])
+@token_auth.login_required
+def create_attachment():
+    '''
+        Create a new attachment
+    '''
+    
+
