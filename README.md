@@ -39,14 +39,14 @@ DELETE
 ### Recipients
 Recipients contain the following elements; 
 
-ID, Message ID, Action, Reason, Reason-Extra, Delivered, Delivery Detail, Email Address
+Recipient ID, Message ID, Action, Reason, Reason-Extra, Delivered, Delivery Detail, Email Address
 
 #### Recipients Routes
 GET
 
   /api/recipients/<message_id>
   
-  /api/recipients/<message_id>/<id>
+  /api/recipients/<message_id>/<recipient_id>
  
  
 POST
@@ -56,25 +56,25 @@ POST
   
 PUT
 
-  /api/recipients/<message_id>/<id>
+  /api/recipients/<message_id>/<recipient_id>
   
   
 DELETE
 
-  /api/recipients/<message_id>/<id>
+  /api/recipients/<message_id>/<recipient_id>
 
 
 ### Attachments
 Attachments contain the following elements; 
 
-ID, Message ID, Name
+Attachment ID, Message ID, Name
 
 #### Attachments Routes
 GET
 
   /api/attachments/<message_id>
   
-  /api/attachments/<message_id>/<id>
+  /api/attachments/<message_id>/<attachment_id>
  
  
 POST
@@ -84,12 +84,12 @@ POST
   
 PUT
 
-  /api/attachments/<message_id>
+  /api/attachments/<message_id>/<attachment_id>
   
   
 DELETE
 
-  /api/attachments/<message_id>
+  /api/attachments/<message_id>/<attachment_id>
   
   
 ### Domains
@@ -107,7 +107,7 @@ GET
  
 POST
 
-  /api/domains/<domain_id>
+  /api/domains
   
   
 PUT
@@ -135,7 +135,7 @@ GET
  
 POST
 
-  /api/accounts/<account_id>
+  /api/accounts
   
   
 PUT
