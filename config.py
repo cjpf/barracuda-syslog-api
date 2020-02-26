@@ -75,7 +75,7 @@ class ProductionConfig(BaseConfig):
     '''
     DEBUG = False
     TESTING = False
-    # SECRET_KEY = open('/path/to/secret/key/file').read()
+    SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 class TestConfig(BaseConfig):

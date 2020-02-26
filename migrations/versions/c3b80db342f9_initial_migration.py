@@ -1,8 +1,8 @@
-"""Initial Migration
+""" initial migration
 
-Revision ID: bd4d9a2adb11
+Revision ID: c3b80db342f9
 Revises: 
-Create Date: 2020-02-24 12:14:37.835715
+Create Date: 2020-02-24 15:39:17.413180
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bd4d9a2adb11'
+revision = 'c3b80db342f9'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,7 +44,7 @@ def upgrade():
     sa.UniqueConstraint('name')
     )
     op.create_table('message',
-    sa.Column('message_id', sa.String(length=32), nullable=False),
+    sa.Column('message_id', sa.String(length=45), nullable=False),
     sa.Column('account_id', sa.String(length=12), nullable=True),
     sa.Column('domain_id', sa.Integer(), nullable=True),
     sa.Column('src_ip', sa.String(length=16), nullable=True),
@@ -63,14 +63,14 @@ def upgrade():
     op.create_index(op.f('ix_message_src_ip'), 'message', ['src_ip'], unique=False)
     op.create_table('attachment',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('message_id', sa.String(length=32), nullable=True),
+    sa.Column('message_id', sa.String(length=45), nullable=True),
     sa.Column('name', sa.String(length=256), nullable=True),
     sa.ForeignKeyConstraint(['message_id'], ['message.message_id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('recipient',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('message_id', sa.String(length=32), nullable=True),
+    sa.Column('message_id', sa.String(length=45), nullable=True),
     sa.Column('action', sa.String(length=32), nullable=True),
     sa.Column('reason', sa.String(length=64), nullable=True),
     sa.Column('reason_extra', sa.String(length=256), nullable=True),

@@ -3,7 +3,7 @@ from app.models import User, Message, Recipient, Attachment, Account, Domain
 import config
 
 
-app = create_app(config.DevelopmentConfig)
+app = create_app(config.ProductionConfig)
 
 
 @app.shell_context_processor
