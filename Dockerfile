@@ -19,6 +19,7 @@ RUN chmod a+x boot.sh
 
 ENV FLASK_APP barracuda-syslog-api.py
 ENV ESS_LOG app/ess.log
+ENV ESS_LOG_OFFSET app/ess.log.offset
 
 RUN chown -R api:api ./
 USER api
