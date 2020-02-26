@@ -56,12 +56,12 @@ POST
   
 PUT
 
-  /api/recipients/<message_id>
+  /api/recipients/<message_id>/<id>
   
   
 DELETE
 
-  /api/recipients/<message_id>
+  /api/recipients/<message_id>/<id>
 
 
 ### Attachments
