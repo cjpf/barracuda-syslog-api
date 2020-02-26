@@ -247,7 +247,7 @@ class Recipient(db.Model):
                                                         self.message_id)
 
 
-class Attachment(db.Model):
+class Attachment(PaginatedAPIMixin, db.Model):
     '''
     Attachment Model
     This model represents an attachment from an email
@@ -268,20 +268,19 @@ class Attachment(db.Model):
             This will later be converted to JSON format 
             For retreiving
         '''
-        data={
+        data = {
             'id':self.id,
             'message_id':self.message_id,
             'name':self.name
         }
         return data
 
-    def from_dict(self):
+    def from_dict(self,data):
         '''
             Converts a Python dict to an Attachment object 
             For creating Attachments
         '''
         for field in [
-            'id',
             'message_id',
             'name'
         ]:
