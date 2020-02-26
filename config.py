@@ -16,11 +16,6 @@ class BaseConfig(object):
     DEBUG = True
     TESTING = False
 
-    # API Configurations
-    # Enable API by Default.  Set MAIL_API = False in .env to Disable.
-    MAIL_API = os.environ.get('MAIL_API') or \
-        True
-
     # Database Configurations
     # Set DATABASE_URL in .env or allow SQLite as default.
     SQLALCHEMY_DATABASE_URI = os.environ.get(
@@ -47,8 +42,8 @@ class BaseConfig(object):
             'func': parse.parse_log,
             'trigger': 'cron',
             'day_of_week': '*',
-            'hour': '*'
-            # 'minute': '2,5,8,11,14,17,20,23,26,29,32,35,38,41,44,47,50,53,56,59'
+            'hour': '*',
+            'minute': '2,5,8,11,14,17,20,23,26,29,32,35,38,41,44,47,50,53,56,59'
         }
     ]
 
@@ -98,7 +93,6 @@ class JobConfig(BaseConfig):
     JOB_CONFIG = True
     # Default ess.log file will not work for most deployments.
     # Production environments require this to be set in .env
-    ESS_LOG = os.environ.get('ESS_LOG') or \
-        os.path.join(BASEDIR, 'ess.log')
-    ESS_LOG_OFFSET = os.environ.get('ESS_LOG_OFFSET') or \
-        os.path.join(BASEDIR, 'ess.log.offset')
+    ESS_LOG = os.environ.get('ESS_LOG')
+    ESS_LOG_OFFSET = os.environ.get('ESS_LOG_OFFSET')
+
