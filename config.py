@@ -93,6 +93,6 @@ class JobConfig(BaseConfig):
     JOB_CONFIG = True
     # Default ess.log file will not work for most deployments.
     # Production environments require this to be set in .env
-    ESS_LOG = os.environ.get('ESS_LOG') or \
-        os.path.join(BASEDIR, 'ess.log')
+    ESS_LOG = os.environ.get('ESS_LOG')
+    ESS_LOG_OFFSET = os.environ.get('ESS_LOG_OFFSET')
 
