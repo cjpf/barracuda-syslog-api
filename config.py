@@ -16,11 +16,6 @@ class BaseConfig(object):
     DEBUG = True
     TESTING = False
 
-    # API Configurations
-    # Enable API by Default.  Set MAIL_API = False in .env to Disable.
-    MAIL_API = os.environ.get('MAIL_API') or \
-        True
-
     # Database Configurations
     # Set DATABASE_URL in .env or allow SQLite as default.
     SQLALCHEMY_DATABASE_URI = os.environ.get(
@@ -53,12 +48,12 @@ class BaseConfig(object):
     ]
 
     # Mail Configurations
-    MAIL_SERVER = os.environ.get('MAIL_SERVER')
-    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    ADMINS = ['cjpf@charliejuliet.net']
+    # MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    # MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
+    # MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
+    # MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    # MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    # ADMINS = ['cjpf@charliejuliet.net']
 
 
 class DevelopmentConfig(BaseConfig):
@@ -100,5 +95,4 @@ class JobConfig(BaseConfig):
     # Production environments require this to be set in .env
     ESS_LOG = os.environ.get('ESS_LOG') or \
         os.path.join(BASEDIR, 'ess.log')
-    ESS_LOG_OFFSET = os.environ.get('ESS_LOG_OFFSET') or \
-        os.path.join(BASEDIR, 'ess.log.offset')
+
