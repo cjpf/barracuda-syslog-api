@@ -18,8 +18,8 @@ class BaseConfig(object):
 
     # Database Configurations
     # Set DATABASE_URL in .env or allow SQLite as default.
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = '{}?charset=utf8mb4'.format(
+        os.environ.get('DATABASE_URL')) or \
         'sqlite:///' + os.path.join(BASEDIR, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -95,4 +95,3 @@ class JobConfig(BaseConfig):
     # Production environments require this to be set in .env
     ESS_LOG = os.environ.get('ESS_LOG')
     ESS_LOG_OFFSET = os.environ.get('ESS_LOG_OFFSET')
-
