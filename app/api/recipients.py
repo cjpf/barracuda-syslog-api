@@ -1,13 +1,11 @@
 from app import db
 from app.api import bp
 from app.api.errors import bad_request
-from app.api.auth import token_auth
 from app.models import Recipient, Message
 from flask import jsonify, request, url_for
 
 # get single recipient by id
 @bp.route('/recipients/<int:recipient_id>', methods=['GET'])
-@token_auth.login_required
 def get_recipient(recipient_id):
     '''
         Retrieve a single recipient
@@ -18,7 +16,6 @@ def get_recipient(recipient_id):
 
 # get all recipients by message id
 @bp.route('/recipients/<string:message_id>', methods=['GET'])
-@token_auth.login_required
 def get_recipients(message_id):
     '''
         Retrieve collection of recpients for a message
@@ -32,7 +29,6 @@ def get_recipients(message_id):
 
 # create a recipient by message id
 @bp.route('/recipients', methods=['POST'])
-@token_auth.login_required
 def create_recipient():
     '''
         Create Recipient
