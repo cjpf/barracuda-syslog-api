@@ -25,8 +25,6 @@ def create_app(config_class):
     app.config.from_object(config_class)
 
     db.init_app(app)
-    app.logger.info('db initialized: {}'.format(
-        app.config['SQLALCHEMY_DATABASE_URI']))
     login.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
@@ -79,7 +77,9 @@ def create_app(config_class):
             app.logger.info(scheduler.get_jobs()[0])
         except Exception as e:
             app.logger.info(e)
-
+            
+    app.logger.info('db URL: {}'.format(
+        app.config['SQLALCHEMY_DATABASE_URI']))
     app.logger.info('app created')
 
     return app
