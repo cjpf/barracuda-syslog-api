@@ -226,7 +226,7 @@ class Message(PaginatedAPIMixin, db.Model):
                 setattr(self, field, data[field])
 
 
-class Recipient(db.Model):
+class Recipient(PaginatedAPIMixin, db.Model):
     '''
     Recipient Model
     This model represents the recipient for an email
@@ -246,6 +246,42 @@ class Recipient(db.Model):
         return '<Recipient {}, from Message {}>'.format(self.id,
                                                         self.message_id)
 
+    def to_dict(self):
+        '''
+            Converts a Recipient object to a Python dict
+            This will later be converted to JSON format 
+            For retreiving
+        '''
+        data = {
+            'id':self.id,
+            'message_id':self.message_id,
+            'action':self.action,
+            'reason':self.reason,
+            'reason_extra':self.reason_extra,
+            'delivered':self.delivered,
+            'delivery_detail':self.delivery_detail,
+            'email':self.email
+        }
+        return data
+
+    def from_dict(self,data):
+        '''
+            Converts a Python dict to an Attachment object 
+            For creating Attachments
+        '''
+        for field in [
+            'id',
+            'message_id',
+            'action',
+            'reason',
+            'reason_extra',
+            'delivered',
+            'delivery_detail',
+            'email'
+        ]:
+            if field in data:
+                setattr(self, field, data[field])
+        
 
 class Attachment(PaginatedAPIMixin, db.Model):
     '''
