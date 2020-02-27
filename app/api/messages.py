@@ -1,13 +1,11 @@
 from app import db
 from app.api import bp
 from app.api.errors import bad_request
-from app.api.auth import token_auth
 from app.models import Message
 from flask import jsonify, request, url_for
 
 
 @bp.route('/messages/<string:message_id>', methods=['GET'])
-@token_auth.login_required
 def get_message(message_id):
     '''
     Retrieve a single Message
@@ -16,7 +14,6 @@ def get_message(message_id):
 
 
 @bp.route('/messages', methods=['GET'])
-@token_auth.login_required
 def get_messages():
     '''
     Retrieve a collection of all Messages
@@ -29,7 +26,6 @@ def get_messages():
 
 
 @bp.route('/messages', methods=['POST'])
-@token_auth.login_required
 def create_message():
     '''
     Create new Message

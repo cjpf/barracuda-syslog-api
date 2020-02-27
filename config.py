@@ -18,8 +18,7 @@ class BaseConfig(object):
 
     # Database Configurations
     # Set DATABASE_URL in .env or allow SQLite as default.
-    SQLALCHEMY_DATABASE_URI = '{}?charset=utf8mb4'.format(
-        os.environ.get('DATABASE_URL')) or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASEDIR, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -62,6 +61,8 @@ class DevelopmentConfig(BaseConfig):
     '''
     DEBUG = True
     TESTING = False
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'sqlite:///' + os.path.join(BASEDIR, 'app.db')
 
 
 class ProductionConfig(BaseConfig):
@@ -71,6 +72,9 @@ class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = '{}?charset=utf8mb4'.format(
+        os.environ.get('DATABASE_URL')) or \
+        'sqlite:///' + os.path.join(BASEDIR, 'app.db')
 
 
 class TestConfig(BaseConfig):

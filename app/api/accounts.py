@@ -1,13 +1,11 @@
 from app import db
 from app.api import bp
 from app.api.errors import bad_request
-from app.api.auth import token_auth
 from app.models import Account
 from flask import jsonify, request, url_for
 
 
 @bp.route('/accounts/<string:account_id>', methods=['GET'])
-@token_auth.login_required
 def get_account(account_id):
     '''
     Retrieve a single Account
@@ -16,7 +14,6 @@ def get_account(account_id):
 
 
 @bp.route('/accounts', methods=['GET'])
-@token_auth.login_required
 def get_accounts():
     '''
     Retrieve a collection of all Accounts
@@ -29,7 +26,6 @@ def get_accounts():
 
 
 @bp.route('/accounts', methods=['POST'])
-@token_auth.login_required
 def create_account():
     '''
     Create new Account
@@ -51,7 +47,6 @@ def create_account():
 
 
 @bp.route('/accounts/<string:account_id>', methods=['PUT'])
-@token_auth.login_required
 def update_account(account_id):
     '''
     Modify a Account
@@ -67,7 +62,6 @@ def update_account(account_id):
 
 
 @bp.route('/accounts/<string:account_id>', methods=['DELETE'])
-@token_auth.login_required
 def delete_account(account_id):
     '''
     Remove a Account

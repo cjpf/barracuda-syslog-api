@@ -1,13 +1,11 @@
 from app import db
 from app.api import bp
 from app.api.errors import bad_request
-from app.api.auth import token_auth
 from app.models import Domain
 from flask import jsonify, request, url_for
 
 
 @bp.route('/domains/<int:domain_id>', methods=['GET'])
-@token_auth.login_required
 def get_domain(domain_id):
     '''
     Retrieve a single Domain
@@ -16,7 +14,6 @@ def get_domain(domain_id):
 
 
 @bp.route('/domains', methods=['GET'])
-@token_auth.login_required
 def get_domains():
     '''
     Retrieve a collection of all Domains
@@ -29,7 +26,6 @@ def get_domains():
 
 
 @bp.route('/domains', methods=['POST'])
-@token_auth.login_required
 def create_domain():
     '''
     Create new Domain
@@ -51,7 +47,6 @@ def create_domain():
 
 
 @bp.route('/domains/<int:domain_id>', methods=['PUT'])
-@token_auth.login_required
 def update_domain(domain_id):
     '''
     Modify a Domain
@@ -67,7 +62,6 @@ def update_domain(domain_id):
 
 
 @bp.route('/domains/<int:domain_id>', methods=['DELETE'])
-@token_auth.login_required
 def delete_domain(domain_id):
     '''
     Remove a Domain

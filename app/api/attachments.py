@@ -1,13 +1,11 @@
 from app import db
 from app.api import bp
 from app.api.errors import bad_request
-from app.api.auth import token_auth
 from app.models import Attachment, Message
 from flask import jsonify, request, url_for
 
 
 @bp.route('/attachments/<int:attachment_id>', methods=['GET'])
-@token_auth.login_required
 def get_attachment(attachment_id):
     '''
         Retrieve a single attachment
@@ -16,7 +14,6 @@ def get_attachment(attachment_id):
 
 
 @bp.route('/attachments/<string:message_id>', methods=['GET'])
-@token_auth.login_required
 def get_attachments(message_id):
     '''
         Retrieve a collection of all attachments
@@ -30,7 +27,6 @@ def get_attachments(message_id):
 
 
 @bp.route('/attachments', methods=['POST'])
-@token_auth.login_required
 def create_attachment():
     '''
         Create a new attachment
