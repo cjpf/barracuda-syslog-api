@@ -5,7 +5,9 @@ import config
 import os
 from pygtail import Pygtail
 from app import db, create_app
+from app.email import send_mail
 from app.models import Message, Recipient, Attachment, Account, Domain
+from flask import render_template
 
 
 def parse_log():
@@ -30,7 +32,7 @@ def parse_log():
                     app.logger.error(r)
 
                 if _is_connection_test(data['account_id'], data['domain_id']):
-                    app.logger.info('Conncetion Test Detected. Skipping...')
+                    app.logger.info('Connection Test Detected. Skipping...')
                     continue
 
                 if _message_exists(app.logger, data['message_id']):
@@ -65,6 +67,25 @@ def parse_log():
                     app.logger.error(e)
                 else:
                     db.session.commit()
+
+                # Encryption Confirmation
+                app.logger.info("Encrypted Outbound message check.")
+                for recipient in data['recipients']:
+                    if recipient['action'] == 'encrypted':
+                        subject = "Encryption Confirmation Notice"
+                        sender = "notification{}".format(
+                            re.findall(r'@.*', data['env_from'])
+                        )
+                        recipients = [data['env_from']]
+                        send_mail(subject,
+                                  sender,
+                                  recipients,
+                                  render_template(
+                                      'encryption_confirmation_email.txt'),
+                                  render_template(
+                                      'encryption_confirmation_email.html')
+                                  )
+
         except Exception as f:
             app.logger.error(f)
 
