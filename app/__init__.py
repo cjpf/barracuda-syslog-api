@@ -77,7 +77,9 @@ def create_app(config_class):
             app.logger.info(scheduler.get_jobs()[0])
         except Exception as e:
             app.logger.info(e)
-
+            
+    app.logger.info('db URL: {}'.format(
+        app.config['SQLALCHEMY_DATABASE_URI']))
     app.logger.info('app created')
 
 
