@@ -8,7 +8,6 @@ RUN apk --update add --virtual build-dependencies libffi-dev openssl-dev python-
     && pip install -r requirements.txt \
     && pip install gunicorn pymysql \
     && apk del build-dependencies
-RUN apk add --no-cache su-exec
 
 RUN adduser -D api
 
@@ -23,6 +22,6 @@ ENV ESS_LOG_OFFSET app/ess.log.offset
 
 RUN chown -R api:api ./
 USER api
-
+USER root
 EXPOSE 5000
 ENTRYPOINT [ "./boot.sh" ]
