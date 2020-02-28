@@ -51,6 +51,25 @@ def parse_log():
                                 app.logger,
                                 recipient,
                                 data['message_id'])
+                                
+                                # Encryption Confirmation
+                            app.logger.info("Encrypted Outbound message check.")
+                            if recipient['action'] == 'encrypted':
+                                subject = "Encryption Confirmation Notice"
+                                send_domain = re.findall(r'@.*', data['env_from'])
+                                send_domain = send_domain[0]
+                                app.logger.info('Encrypted message sent from {}'.format(send_domain))
+                                sender = "notification{}".format(send_domain)
+                                recipients = [data['env_from']]
+                                send_mail(subject,
+                                        sender,
+                                        recipients,
+                                        render_template(
+                                            'encryption_confirmation_email.txt'),
+                                        render_template(
+                                            'encryption_confirmation_email.html')
+                                        )
+
 
                     if data['attachments']:
                         for attachment in data['attachments']:
@@ -67,28 +86,10 @@ def parse_log():
                     app.logger.error(e)
                 else:
                     db.session.commit()
-
-                # Encryption Confirmation
-                app.logger.info("Encrypted Outbound message check.")
-                for recipient in data['recipients']:
-                    if recipient['action'] == 'encrypted':
-                        subject = "Encryption Confirmation Notice"
-                        send_domain = re.findall(r'@.*', data['env_from'])
-                        send_domain = send_domain[0]
-                        app.logger.info('Encrypted message sent from {}'.format(send_domain))
-                        sender = "notification{}".format(send_domain)
-                        recipients = [data['env_from']]
-                        send_mail(subject,
-                                  sender,
-                                  recipients,
-                                  render_template(
-                                      'encryption_confirmation_email.txt'),
-                                  render_template(
-                                      'encryption_confirmation_email.html')
-                                  )
-
+                    
         except Exception as f:
             app.logger.error(f)
+            app.logger.error(f.with_traceback)
 
     app.logger.info('Closing app context for parse_log')
     app_context.pop()
