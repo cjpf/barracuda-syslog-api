@@ -8,7 +8,7 @@ RUN apk --update add --virtual build-dependencies libffi-dev openssl-dev python-
     && pip install -r requirements.txt \
     && pip install gunicorn pymysql \
     && apk del build-dependencies
-RUN set -ex && apk --no-cache add sudo
+RUN apk add --no-cache su-exec
 
 RUN adduser -D api
 
