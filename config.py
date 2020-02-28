@@ -16,15 +16,10 @@ class BaseConfig(object):
     DEBUG = True
     TESTING = False
 
-    # API Configurations
-    # Enable API by Default.  Set MAIL_API = False in .env to Disable.
-    MAIL_API = os.environ.get('MAIL_API') or \
-        True
-
     # Database Configurations
     # Set DATABASE_URL in .env or allow SQLite as default.
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = '{}?charset=utf8mb4'.format(
+        os.environ.get('DATABASE_URL')) or \
         'sqlite:///' + os.path.join(BASEDIR, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -66,7 +61,7 @@ class DevelopmentConfig(BaseConfig):
     Development environment specific config
     '''
     DEBUG = True
-    TESTING = True
+    TESTING = False
 
 
 class ProductionConfig(BaseConfig):
@@ -75,7 +70,7 @@ class ProductionConfig(BaseConfig):
     '''
     DEBUG = False
     TESTING = False
-    # SECRET_KEY = open('/path/to/secret/key/file').read()
+    SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 class TestConfig(BaseConfig):
@@ -98,7 +93,5 @@ class JobConfig(BaseConfig):
     JOB_CONFIG = True
     # Default ess.log file will not work for most deployments.
     # Production environments require this to be set in .env
-    ESS_LOG = os.environ.get('ESS_LOG') or \
-        os.path.join(BASEDIR, 'ess.log')
-    ESS_LOG_OFFSET = os.environ.get('ESS_LOG_OFFSET') or \
-        os.path.join(BASEDIR, 'ess.log.offset')
+    ESS_LOG = os.environ.get('ESS_LOG')
+    ESS_LOG_OFFSET = os.environ.get('ESS_LOG_OFFSET')

@@ -32,8 +32,7 @@ def create_app(config_class):
     if app.config['JOB_CONFIG']:
         from app.parse import bp as parse_bp
         app.register_blueprint(parse_bp)
-
-    if app.config['MAIL_API']:
+    else:
         from app.api import bp as api_bp
         app.register_blueprint(api_bp, url_prefix='/api')
 
@@ -69,9 +68,6 @@ def create_app(config_class):
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
         app.logger.setLevel(logging.INFO)
-        app.logger.info('app created')
-    else:
-        app.logger.info('parse_log app created')
 
     if app.config['SCHEDULER_API']:
         app.logger.info("Scheduler API Enabled.  Starting Scheduler...")
@@ -81,5 +77,10 @@ def create_app(config_class):
             app.logger.info(scheduler.get_jobs()[0])
         except Exception as e:
             app.logger.info(e)
+            
+    app.logger.info('db URL: {}'.format(
+        app.config['SQLALCHEMY_DATABASE_URI']))
+    app.logger.info('app created')
+
 
     return app

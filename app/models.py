@@ -160,11 +160,11 @@ class Message(PaginatedAPIMixin, db.Model):
     This model represents an email that passed through Barracuda Email
     Security Service
     '''
-    message_id = db.Column(db.String(32), primary_key=True)
+    message_id = db.Column(db.String(45), primary_key=True)
     account_id = db.Column(db.String(12), db.ForeignKey('account.account_id'))
     account = db.relationship(
         'Account', backref=db.backref('messages', lazy='dynamic'))
-    domain_id = db.Column(db.String(12), db.ForeignKey('domain.domain_id'))
+    domain_id = db.Column(db.Integer, db.ForeignKey('domain.domain_id'))
     domain = db.relationship(
         'Domain', backref=db.backref('messages', lazy='dynamic'))
     src_ip = db.Column(db.String(16), index=True)
@@ -226,13 +226,13 @@ class Message(PaginatedAPIMixin, db.Model):
                 setattr(self, field, data[field])
 
 
-class Recipient(db.Model):
+class Recipient(PaginatedAPIMixin, db.Model):
     '''
     Recipient Model
     This model represents the recipient for an email
     '''
     id = db.Column(db.Integer, primary_key=True)
-    message_id = db.Column(db.String(32), db.ForeignKey('message.message_id'))
+    message_id = db.Column(db.String(45), db.ForeignKey('message.message_id'))
     message = db.relationship(
         'Message', backref=db.backref('recipients', lazy='dynamic'))
     action = db.Column(db.String(32))
@@ -246,14 +246,50 @@ class Recipient(db.Model):
         return '<Recipient {}, from Message {}>'.format(self.id,
                                                         self.message_id)
 
+    def to_dict(self):
+        '''
+            Converts a Recipient object to a Python dict
+            This will later be converted to JSON format 
+            For retreiving
+        '''
+        data = {
+            'id':self.id,
+            'message_id':self.message_id,
+            'action':self.action,
+            'reason':self.reason,
+            'reason_extra':self.reason_extra,
+            'delivered':self.delivered,
+            'delivery_detail':self.delivery_detail,
+            'email':self.email
+        }
+        return data
 
-class Attachment(db.Model):
+    def from_dict(self,data):
+        '''
+            Converts a Python dict to an Attachment object 
+            For creating Attachments
+        '''
+        for field in [
+            'id',
+            'message_id',
+            'action',
+            'reason',
+            'reason_extra',
+            'delivered',
+            'delivery_detail',
+            'email'
+        ]:
+            if field in data:
+                setattr(self, field, data[field])
+        
+
+class Attachment(PaginatedAPIMixin, db.Model):
     '''
     Attachment Model
     This model represents an attachment from an email
     '''
     id = db.Column(db.Integer, primary_key=True)
-    message_id = db.Column(db.String(32), db.ForeignKey('message.message_id'))
+    message_id = db.Column(db.String(45), db.ForeignKey('message.message_id'))
     message = db.relationship(
         'Message', backref=db.backref('attachments', lazy='dynamic'))
     name = db.Column(db.String(256))
@@ -261,6 +297,33 @@ class Attachment(db.Model):
     def __repr__(self):
         return '<Attachment {}, from Message {}>'.format(self.id,
                                                          self.message_id)
+
+    def to_dict(self):
+        '''
+            Converts an Attachment object to a Python dict
+            This will later be converted to JSON format 
+            For retreiving
+        '''
+        data = {
+            'id':self.id,
+            'message_id':self.message_id,
+            'name':self.name
+        }
+        return data
+
+    def from_dict(self,data):
+        '''
+            Converts a Python dict to an Attachment object 
+            For creating Attachments
+        '''
+        for field in [
+            'message_id',
+            'name'
+        ]:
+            if field in data:
+                setattr(self, field, data[field])
+        
+
 
 
 class Account(PaginatedAPIMixin, db.Model):
