@@ -22,6 +22,6 @@ ENV ESS_LOG_OFFSET app/ess.log.offset
 
 RUN chown -R api:api ./
 USER api
-USER root
+
 EXPOSE 5000
 ENTRYPOINT [ "./boot.sh" ]
