@@ -4,6 +4,8 @@ A RESTful API sitting on top of a syslog parser that stores Barracuda Email Secu
 The Barracuda Email Security Service allows you to send email metadata to a syslog server. This integration accepts the metadata for all mail that passes through the service.  The Barracuda syslog integration requires TLS with peer verification disabled.
 
 ## Log Parser
+The log parser will read and store the syslog entries pushed to the syslog-ng server by the Barracuda Email Security Service.  Each log entry will be stored in a MySQL database for retrieval by the API later.
+The Log Parser is also responsible for queueing encryption confirmation emails to be sent to the sender when they trigger the Barracuda encryption service.
 
 ## API Routes
 The API provides routes for Messages, Recipients, Attachments, Domains, and Accounts.
@@ -25,16 +27,6 @@ POST
 
   /api/messages
   
-  
-PUT
-
-  /api/messages/<message_id>
-  
-  
-DELETE
-
-  /api/messages/<message_id>
-  
 
 ### Recipients
 Recipients contain the following elements; 
@@ -44,24 +36,14 @@ Recipient ID, Message ID, Action, Reason, Reason-Extra, Delivered, Delivery Deta
 #### Recipients Routes
 GET
 
-  /api/recipients/<message_id>
+  /api/recipients/<recipient_id>
   
-  /api/recipients/<message_id>/<recipient_id>
+  /api/recipients/<message_id>
  
  
 POST
 
-  /api/recipients/<message_id>
-  
-  
-PUT
-
-  /api/recipients/<message_id>/<recipient_id>
-  
-  
-DELETE
-
-  /api/recipients/<message_id>/<recipient_id>
+  /api/recipients
 
 
 ### Attachments
@@ -79,17 +61,7 @@ GET
  
 POST
 
-  /api/attachments/<message_id>
-  
-  
-PUT
-
-  /api/attachments/<message_id>/<attachment_id>
-  
-  
-DELETE
-
-  /api/attachments/<message_id>/<attachment_id>
+  /api/attachments/<message_id> 
   
   
 ### Domains
