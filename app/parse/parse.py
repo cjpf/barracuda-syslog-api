@@ -73,9 +73,10 @@ def parse_log():
                 for recipient in data['recipients']:
                     if recipient['action'] == 'encrypted':
                         subject = "Encryption Confirmation Notice"
-                        sender = "notification{}".format(
-                            re.findall(r'@.*', data['env_from'])
-                        )
+                        send_domain = re.findall(r'@.*', data['env_from'])
+                        send_domain = send_domain[0]
+                        app.logger.info('Encrypted message sent from {}'.format(send_domain))
+                        sender = "notification{}".format(send_domain)
                         recipients = [data['env_from']]
                         send_mail(subject,
                                   sender,
