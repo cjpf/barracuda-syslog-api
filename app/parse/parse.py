@@ -20,17 +20,17 @@ def parse_log():
 
     _detect_rotated_log(app)
     with app.app_context():
-        try:
-            for line in Pygtail(app.config['ESS_LOG'],
-                                paranoid=True,
-                                full_lines=True,
-                                offset_file=app.config['ESS_LOG_OFFSET']):
-                try:
-                    data = re.findall(r'\{.*\}', line)
-                    data = json.loads(data[0])
-                except Exception as r:
-                    app.logger.error(r)
-
+        for line in Pygtail(app.config['ESS_LOG'],
+                            paranoid=True,
+                            full_lines=True,
+                            offset_file=app.config['ESS_LOG_OFFSET']):
+            try:
+                data = re.findall(r'\{.*\}', line)
+                data = json.loads(data[0])
+            except Exception as r:
+                app.logger.error(r)
+            
+            try:
                 if _is_connection_test(data['account_id'], data['domain_id']):
                     app.logger.info('Connection Test Detected. Skipping...')
                     continue
@@ -40,58 +40,57 @@ def parse_log():
                     continue
                 app.logger.info('Message ID NOT FOUND. Processing...')
 
-                try:
-                    _store_account(app.logger, data)
-                    _store_domain(app.logger, data)
-                    _store_message(app.logger, data)
+            except Exception as e:
+                app.logger.error(e)
 
-                    if data['recipients']:
-                        for recipient in data['recipients']:
-                            _store_recipient(
-                                app.logger,
-                                recipient,
-                                data['message_id'])
+            try:
+                _store_account(app.logger, data)
+                _store_domain(app.logger, data)
+                _store_message(app.logger, data)
 
-                            # Encryption Confirmation
+                if data['recipients']:
+                    for recipient in data['recipients']:
+                        _store_recipient(
+                            app.logger,
+                            recipient,
+                            data['message_id'])
+
+                        # Encryption Confirmation
+                        app.logger.info(
+                            "Encrypted Outbound message check.")
+                        if recipient['action'] == 'encrypted':
+                            subject = "Encryption Confirmation Notice"
+                            send_domain = re.findall(
+                                r'@.*', data['env_from'])
+                            send_domain = send_domain[0]
                             app.logger.info(
-                                "Encrypted Outbound message check.")
-                            if recipient['action'] == 'encrypted':
-                                subject = "Encryption Confirmation Notice"
-                                send_domain = re.findall(
-                                    r'@.*', data['env_from'])
-                                send_domain = send_domain[0]
-                                app.logger.info(
-                                    'Encrypted message sent from {}'.format(send_domain))
-                                sender = "notification{}".format(send_domain)
-                                recipients = [data['env_from']]
-                                send_mail(subject,
-                                          sender,
-                                          recipients,
-                                          render_template(
-                                              'encryption_confirmation_email.txt'),
-                                          render_template(
-                                              'encryption_confirmation_email.html')
-                                          )
+                                'Encrypted message sent from {}'.format(send_domain))
+                            sender = "notification{}".format(send_domain)
+                            recipients = [data['env_from']]
+                            send_mail(subject,
+                                        sender,
+                                        recipients,
+                                        render_template(
+                                            'encryption_confirmation_email.txt'),
+                                        render_template(
+                                            'encryption_confirmation_email.html')
+                                        )
 
-                    if data['attachments']:
-                        for attachment in data['attachments']:
-                            _store_attachment(
-                                app.logger,
-                                attachment,
-                                data['message_id'])
+                if data['attachments']:
+                    for attachment in data['attachments']:
+                        _store_attachment(
+                            app.logger,
+                            attachment,
+                            data['message_id'])
 
-                except Exception as e:
-                    db.session.rollback()
-                    app.logger.error(
-                        "Failed to Process Message ({})".format(
-                            data['message_id']))
-                    app.logger.error(e)
-                else:
-                    db.session.commit()
-
-        except Exception as f:
-            app.logger.error(f)
-            app.logger.error(f.with_traceback())
+            except Exception as e:
+                db.session.rollback()
+                app.logger.error(
+                    "Failed to Process Message ({})".format(
+                        data['message_id']))
+                app.logger.error(e)
+            else:
+                db.session.commit()
 
     app.logger.info('Closing app context for parse_log')
     app_context.pop()
