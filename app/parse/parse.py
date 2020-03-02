@@ -29,7 +29,7 @@ def parse_log():
                 data = json.loads(data[0])
             except Exception as r:
                 app.logger.error(r)
-            
+
             try:
                 if _is_connection_test(data['account_id'], data['domain_id']):
                     app.logger.info('Connection Test Detected. Skipping...')
@@ -55,26 +55,9 @@ def parse_log():
                             recipient,
                             data['message_id'])
 
-                        # Encryption Confirmation
                         app.logger.info(
-                            "Encrypted Outbound message check.")
-                        if recipient['action'] == 'encrypted':
-                            subject = "Encryption Confirmation Notice"
-                            send_domain = re.findall(
-                                r'@.*', data['env_from'])
-                            send_domain = send_domain[0]
-                            app.logger.info(
-                                'Encrypted message sent from {}'.format(send_domain))
-                            sender = "notification{}".format(send_domain)
-                            recipients = [data['env_from']]
-                            send_mail(subject,
-                                        sender,
-                                        recipients,
-                                        render_template(
-                                            'encryption_confirmation_email.txt'),
-                                        render_template(
-                                            'encryption_confirmation_email.html')
-                                        )
+                            "Checking Outbound Encryption Status")
+                        _check_encryption_status(recipient, data)
 
                 if data['attachments']:
                     for attachment in data['attachments']:
@@ -94,6 +77,44 @@ def parse_log():
 
     app.logger.info('Closing app context for parse_log')
     app_context.pop()
+
+
+def _get_sender_domain(env_from):
+    '''
+    Extract the sender's domain name and return a spoof
+    address for confirmation email.
+    env_from: cj@charliejuliet.net
+    return: notification@charliejuliet.net
+    '''
+    send_domain = re.findall(r'@.*', env_from)[0]
+    return 'notification{}'.format(send_domain)
+
+
+def _check_encryption_status(recipient, data):
+    '''
+    Checks the Action value for a recipient to see if an 
+    encryption confirmation message should be generated
+    for the sender.
+    '''
+    if recipient['action'] == 'encrypted':
+        subject = "Encryption Confirmation Notice"
+        sender = _get_sender_domain(data['env_from'])
+        recipient = [data['env_from']]
+        _send_encryption_confirmation(subject, sender, recipient)
+
+
+def _send_encryption_confirmation(subject, sender, recipient):
+    '''
+    Sends the encryption confirmation email
+    '''
+    send_mail(subject,
+              sender,
+              recipient,
+              render_template(
+                  'encryption_confirmation_email.txt'),
+              render_template(
+                  'encryption_confirmation_email.html')
+              )
 
 
 def _detect_rotated_log(app):
