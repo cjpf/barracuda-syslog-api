@@ -1,12 +1,14 @@
-<p>Dear HTML User,</p>
+<p>Dear {{ from }}</p>
 <p>
-    To reset your password
-    <a href="#">
-        click here
-    </a>.
+  This is a message to inform you that the following email was sent with
+  encryption through the Barracuda Message Center;
 </p>
-<p>Alternatively, you can paste the following link in your browser's address bar:</p>
-<p></p>
-<p>If you have not requested a password reset simply ignore this message.</p>
-<p>Sincerely,</p>
-<p>The Microblog Team</p>
+<p>From: {{ from }}</p>
+<p>To: {{ to }}</p>
+<p>Subject: {{ subject }}</p>
+<p>Reason: {{ reason }}</p>
+<p>
+  If you did not intend for this message to be encrypted, please reach out to
+  your administrator and let them know.
+</p>
+<p>Thank you</p>
