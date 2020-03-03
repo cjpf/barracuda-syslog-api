@@ -79,7 +79,7 @@ def parse_log():
     app_context.pop()
 
 
-def _get_sender_domain(env_from):
+def _build_from_address(env_from):
     '''
     Extract the sender's domain name and return a spoof
     address for confirmation email.
@@ -98,7 +98,7 @@ def _check_encryption_status(recipient, data):
     '''
     if recipient['action'] == 'encrypted':
         subject = "Encryption Confirmation Notice"
-        sender = _get_sender_domain(data['env_from'])
+        sender = _build_from_address(data['env_from'])
         recipient = [data['env_from']]
         _send_encryption_confirmation(subject, sender, recipient)
 
