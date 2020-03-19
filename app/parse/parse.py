@@ -202,21 +202,25 @@ def _store_domain(logger, data):
             name = _get_domain_name_by_id(
                 data['dst_domain'], data['domain_id'])
             if name:
+                logger.info("Name Obtained: {}".format(name))
                 try:
                     domain = Domain.query.filter_by(domain_id=domain_id).first()
                     domain.name = name
                     db.session.commit()
                 except Exception as e:
                     raise Exception(e)
+                logger.info("Domain updated!)
         else:
             logger.info("Domain already has a Name.")
     else:
         logger.info("Domain ID NOT FOUND. Creating Domain.")
         name = _get_domain_name_by_id(data['dst_domain'], data['domain_id'])
         if not name:
+            logger.info("Name not found, creating domain without name.")
             d = Domain(domain_id=data['domain_id'],
                        account_id=data['account_id'])
         else:
+            logger.info("Name Obtained: {}".format(name))
             d = Domain(domain_id=data['domain_id'],
                        account_id=data['account_id'], name=name)
         try:
