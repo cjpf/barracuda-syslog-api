@@ -204,12 +204,13 @@ def _store_domain(logger, data):
             if name:
                 logger.info("Name Obtained: {}".format(name))
                 try:
-                    domain = Domain.query.filter_by(domain_id=domain_id).first()
+                    domain = Domain.query.filter_by(
+                        domain_id=domain_id).first()
                     domain.name = name
                     db.session.commit()
                 except Exception as e:
                     raise Exception(e)
-                logger.info("Domain updated!)
+                logger.info("Domain updated!")
         else:
             logger.info("Domain already has a Name.")
     else:
