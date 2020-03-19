@@ -8,6 +8,7 @@ from app import db, create_app
 from app.email import send_mail
 from app.models import Message, Recipient, Attachment, Account, Domain
 from flask import render_template
+from dns import resolver
 
 
 def parse_log():
@@ -195,15 +196,57 @@ def _store_domain(logger, data):
     Creates new Domain entry if not already created.
     '''
     if _domain_exists(logger, data['domain_id']):
-        logger.info("Domain ID FOUND. Skipping Domain...")
-        return False
+        logger.info("Domain ID FOUND. Checking for Name...")
+        if not _domain_has_name(data['domain_id']):
+            logger.info("No name found. Obtaining Domain name...")
+            name = _get_domain_name_by_id(
+                data['dst_domain'], data['domain_id'])
+            if name:
+                try:
+                    domain = Domain.query.filter_by(domain_id=domain_id).first()
+                    domain.name = name
+                    db.session.commit()
+                except Exception as e:
+                    raise Exception(e)
+        else:
+            logger.info("Domain already has a Name.")
     else:
         logger.info("Domain ID NOT FOUND. Creating Domain.")
-        d = Domain(domain_id=data['domain_id'], account_id=data['account_id'])
+        name = _get_domain_name_by_id(data['dst_domain'], data['domain_id'])
+        if not name:
+            d = Domain(domain_id=data['domain_id'],
+                       account_id=data['account_id'])
+        else:
+            d = Domain(domain_id=data['domain_id'],
+                       account_id=data['account_id'], name=name)
         try:
             _add(d)
         except Exception as e:
             raise Exception(e)
+
+
+def _get_domain_name_by_id(destination, domain_id):
+    '''
+    Determines the Name of a Domain by ID. 
+    Perform MX record lookups on the dst_domain and check to see
+    if the Domain ID is matched within any of those records.  
+    Barracuda MX records use the following format; d206037a.ess.barracudanetworks.com
+    If no match is found, return None.
+    '''
+    mx_records = resolver.query(destination, 'MX')
+    for mx in mx_records:
+        result = re.search(
+            r'd(\d{5,8})[ab]\.ess\.barracudanetworks\.com', str(mx))
+        if result and result.group(1) == domain_id:
+            return destination
+
+
+def _domain_has_name(domain_id):
+    '''
+    Checks to see if an existing domain ID entry has a populated Name field
+    '''
+    return True if Domain.query.filter_by(domain_id=domain_id).first().name \
+        else False
 
 
 def _store_message(logger, data):
