@@ -194,6 +194,9 @@ def _store_attachment(logger, data, message_id):
 def _store_domain(logger, data):
     '''
     Creates new Domain entry if not already created.
+    Checks to see if domain exists.  If domain exists, check for name
+    and obtain name if necessary.
+    If domain does not exist, check for name and create domain.
     '''
     if _domain_exists(logger, data['domain_id']):
         logger.info("Domain ID FOUND. Checking for Name...")
@@ -204,9 +207,9 @@ def _store_domain(logger, data):
             if name:
                 logger.info("Name Obtained: {}".format(name))
                 try:
-                    domain = Domain.query.filter_by(
+                    d = Domain.query.filter_by(
                         domain_id=domain_id).first()
-                    domain.name = name
+                    d.name = name
                     db.session.commit()
                 except Exception as e:
                     raise Exception(e)
