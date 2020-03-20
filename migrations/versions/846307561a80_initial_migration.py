@@ -1,8 +1,8 @@
-""" initial migration
+"""initial migration
 
-Revision ID: c3b80db342f9
+Revision ID: 846307561a80
 Revises: 
-Create Date: 2020-02-24 15:39:17.413180
+Create Date: 2020-03-20 14:25:38.064170
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c3b80db342f9'
+revision = '846307561a80'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,18 +44,18 @@ def upgrade():
     sa.UniqueConstraint('name')
     )
     op.create_table('message',
-    sa.Column('message_id', sa.String(length=45), nullable=False),
+    sa.Column('message_id', sa.String(length=64), nullable=False),
     sa.Column('account_id', sa.String(length=12), nullable=True),
     sa.Column('domain_id', sa.Integer(), nullable=True),
     sa.Column('src_ip', sa.String(length=16), nullable=True),
-    sa.Column('ptr_record', sa.String(length=128), nullable=True),
+    sa.Column('ptr_record', sa.String(length=256), nullable=True),
     sa.Column('hdr_from', sa.String(length=256), nullable=True),
-    sa.Column('env_from', sa.String(length=256), nullable=True),
-    sa.Column('hdr_to', sa.String(length=256), nullable=True),
-    sa.Column('dst_domain', sa.String(length=128), nullable=True),
+    sa.Column('env_from', sa.String(length=1024), nullable=True),
+    sa.Column('hdr_to', sa.String(length=2048), nullable=True),
+    sa.Column('dst_domain', sa.String(length=256), nullable=True),
     sa.Column('size', sa.Integer(), nullable=True),
-    sa.Column('subject', sa.String(length=512), nullable=True),
-    sa.Column('timestamp', sa.String(length=128), nullable=True),
+    sa.Column('subject', sa.String(length=1024), nullable=True),
+    sa.Column('timestamp', sa.String(length=256), nullable=True),
     sa.ForeignKeyConstraint(['account_id'], ['account.account_id'], ),
     sa.ForeignKeyConstraint(['domain_id'], ['domain.domain_id'], ),
     sa.PrimaryKeyConstraint('message_id')
