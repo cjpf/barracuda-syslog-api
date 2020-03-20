@@ -28,8 +28,16 @@ def parse_log():
             try:
                 data = re.findall(r'\{.*\}', line)
                 data = json.loads(data[0])
-            except Exception as r:
-                app.logger.error(r)
+                data['message_id']
+            except IndexError as i:
+                app.logger.error(i)
+                continue
+            except KeyError as k:
+                app.logger.error(k)
+                continue
+            except Exception as e:
+                app.logger.error(e)
+                continue
 
             try:
                 if _is_connection_test(data['account_id'], data['domain_id']):
