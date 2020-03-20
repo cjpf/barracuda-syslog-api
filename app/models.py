@@ -160,7 +160,7 @@ class Message(PaginatedAPIMixin, db.Model):
     This model represents an email that passed through Barracuda Email
     Security Service
     '''
-    message_id = db.Column(db.String(45), primary_key=True)
+    message_id = db.Column(db.String(64), primary_key=True)
     account_id = db.Column(db.String(12), db.ForeignKey('account.account_id'))
     account = db.relationship(
         'Account', backref=db.backref('messages', lazy='dynamic'))
@@ -168,14 +168,14 @@ class Message(PaginatedAPIMixin, db.Model):
     domain = db.relationship(
         'Domain', backref=db.backref('messages', lazy='dynamic'))
     src_ip = db.Column(db.String(16), index=True)
-    ptr_record = db.Column(db.String(128))
+    ptr_record = db.Column(db.String(256))
     hdr_from = db.Column(db.String(256))
-    env_from = db.Column(db.String(256))
-    hdr_to = db.Column(db.String(256))
-    dst_domain = db.Column(db.String(128))
+    env_from = db.Column(db.String(1024))
+    hdr_to = db.Column(db.String(2048))
+    dst_domain = db.Column(db.String(256))
     size = db.Column(db.Integer)
-    subject = db.Column(db.String(512))
-    timestamp = db.Column(db.String(128))
+    subject = db.Column(db.String(1024))
+    timestamp = db.Column(db.String(256))
 
     def __repr__(self):
         return '<Message {}>'.format(self.message_id)

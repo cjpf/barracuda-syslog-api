@@ -62,7 +62,7 @@ class DevelopmentConfig(BaseConfig):
     '''
     DEBUG = True
     TESTING = False
-
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASEDIR, 'app.db')
 
 class ProductionConfig(BaseConfig):
     '''
