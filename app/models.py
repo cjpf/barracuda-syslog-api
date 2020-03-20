@@ -324,8 +324,6 @@ class Attachment(PaginatedAPIMixin, db.Model):
                 setattr(self, field, data[field])
         
 
-
-
 class Account(PaginatedAPIMixin, db.Model):
     '''
     Account Model

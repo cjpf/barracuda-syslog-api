@@ -36,23 +36,23 @@ def create_app(config_class):
         from app.api import bp as api_bp
         app.register_blueprint(api_bp, url_prefix='/api')
 
-    if not app.debug and not app.testing:
-        if app.config['MAIL_SERVER']:
-            auth = None
-            if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
-                auth = (app.config['MAIL_USERNAME'],
-                        app.config['MAIL_PASSWORD'])
-            secure = None
-            if app.config['MAIL_USE_TLS']:
-                secure = ()
-            mail_handler = SMTPHandler(
-                mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
-                fromaddr='no-reply@' + app.config['MAIL_SERVER'],
-                toaddrs=app.config['ADMINS'],
-                subject='barracuda-syslog-tools Failure',
-                credentials=auth, secure=secure)
-            mail_handler.setLevel(logging.ERROR)
-            app.logger.addHandler(mail_handler)
+    # if not app.debug and not app.testing:
+    #     if app.config['MAIL_SERVER']:
+    #         auth = None
+    #         if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
+    #             auth = (app.config['MAIL_USERNAME'],
+    #                     app.config['MAIL_PASSWORD'])
+    #         secure = None
+    #         if app.config['MAIL_USE_TLS']:
+    #             secure = ()
+    #         mail_handler = SMTPHandler(
+    #             mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
+    #             fromaddr='no-reply@' + app.config['MAIL_SERVER'],
+    #             toaddrs=app.config['ADMINS'],
+    #             subject='barracuda-syslog-tools Failure',
+    #             credentials=auth, secure=secure)
+    #         mail_handler.setLevel(logging.ERROR)
+    #         app.logger.addHandler(mail_handler)
 
     if not os.path.exists('logs'):
         os.mkdir('logs')
@@ -80,6 +80,10 @@ def create_app(config_class):
             
     app.logger.info('db URL: {}'.format(
         app.config['SQLALCHEMY_DATABASE_URI']))
+    app.logger.info('mail_server: {}'.format(
+        app.config['MAIL_SERVER']))
+    app.logger.info('mail_port: {}'.format(
+        app.config['MAIL_PORT']))
     app.logger.info('app created')
 
     return app

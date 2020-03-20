@@ -1,0 +1,12 @@
+Dear {{ from }},
+
+This is a message to inform you that the following email was sent with encryption through the Barracuda Message Center;
+
+    From: {{ from }}
+    To: {{ to }}
+    Subject: {{ subject }}
+    Reason: {{ reason }}
+    
+If you did not intend for this message to be encrypted, please reach out to your administrator and let them know.
+
+Thank you
